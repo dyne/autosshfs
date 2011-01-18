@@ -1,0 +1,86 @@
+#+TITLE: autosshfs -- Per user SSHFS automount using user's SSH config and keys.
+
+* Introduction
+
+  Autofs doesn't provide an easy way to mount SSHFS filesystems as a regular user.  HOWTOs abound on the topic, but rarely propose a solution involving the user's ssh-agent and password-protected keys.
+
+  Autosshfs provides helper scripts to manage user automounts using SSHFS and keychain
+
+  This program was heavily inspired by Josh Jackson's autofs_sshfs, published at
+  http://pturing.firehead.org/software/autofs_sshfs/
+
+* License
+
+    Copyright 2011 Hellekin O. Wolf <hellekin@riseup.net>
+
+    This program is free software: you can redistribute it and/or
+    modify it under the terms of the GNU Affero General Public License
+    as published by the Free Software Foundation, either version 3 of
+    the License, or (at your option) any later version.
+
+    See: COPYING (or run make license if you're online)
+
+* Requirements
+
+    - sudo privilege (for installation)
+    - ssh, sshfs, autofs, keychain, ssh-askpass
+
+* Quick Install
+
+    sudo apt-get install keychain ssh-askpass sshfs autofs
+    git clone https://github.com/hellekin/autosshfs.git
+    cd autosshfs && sudo make install
+    sudo autosshfs-user add $(id -un)
+    ls ~/mnt/ssh/yourremotehost
+
+* Operation
+
+    This section describes how the whole thing works.
+
+** /etc/auto.master
+
+    1. Each entry MUST point to under user's $HOME.  We assume it takes the form
+:      /home/$USER/path/to/sshfs/mountpoint
+       In any other case it will break.
+
+    2. UID and GID must match `id -u $USER` and `id -g $USER`
+
+    3. $USER must be in group 'ssh'
+
+*** Example:
+
+:   /home/joe/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=1234,gid=1234,--timeout=600,--ghost
+
+** autosshfs-user
+
+    This program enables or disables the automount service for a user.
+
+    Running =autosshfs-user add joe= will:
+
+      - add =joe= to the =ssh= group
+      - create a =autosshfs-as-joe= sudo wrapper for SSH
+      - register the user automounter in =/etc/auto.master=
+      - =restart autofs=
+
+    Running =autosshfs-user del joe= will:
+
+      - remove =joe= from the =ssh= group
+      - remove the =autosshfs-as-joe= script
+      - remove =joe='s entry in =/etc/auto.master=
+      - =restart autofs=
+
+** autosshfs-map
+
+    Returns the =autofs= map for the requested host.
+
+    Mountpoints are under /home/$USER/mnt/ssh
+
+    The whole remote host's filesystem is mounted, only accessible to the user.
+
+    The script is called from =/etc/auto.master=.
+
+** autosshfs-ssh
+
+    A wrapper to the =ssh= command that will force autofs to use the user's SSH setup, including password-protected SSH keys, as long as they're available to the keychain.
+
+    It is called by =autosshfs-as-joe= (using =sudo=) and loads =joe='s =keychain=.

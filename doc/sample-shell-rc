@@ -1,0 +1,10 @@
+# Load this from your .bashrc / .zshrc
+#
+# It will load all ssh keys in ~/.ssh/id_rsa* with perm 0600
+# as well as all GPG keys with a private key in the secret keyring
+#
+
+[ -x $(which keychain-ring) ]           && $(which keychain-ring) -q
+[ -z "$HOSTNAME" ]                      && HOSTNAME=`uname -n`
+[ -f $HOME/.keychain/$HOSTNAME-sh ]     && . $HOME/.keychain/$HOSTNAME-sh
+[ -f $HOME/.keychain/$HOSTNAME-sh-gpg ] && . $HOME/.keychain/$HOSTNAME-sh-gpg

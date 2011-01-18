@@ -1,0 +1,76 @@
+#!/bin/bash
+
+# autosshfs-ssh -- Wrap ssh to load SSH environment from user's keychain
+#
+# It is intended to be called as: sudo -H -u USER -i autosshfs-ssh "$@"
+#
+## LICENSE
+#
+# Copyright 2011 Hellekin O. Wolf <hellekin@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>,
+# or, from the package source directory, run: make license
+#
+
+PROGNAME=${0##*/}
+
+fail() {
+  echo "${PROGNAME}: $@"
+  exit 1
+}
+
+# We need a user
+test -n "$USER"       || fail "missing username"
+
+# With a keychain
+KEYCHAIN=$(which keychain)
+test -x "${KEYCHAIN}" || fail "missing executable: keychain"
+
+# Find user's DISPLAY
+DISPLAY=$(ps aux | sed -e '/sed/d;/${USER}.*xinit/!d;s/^.*xserverrc \(:[0-9\.]*\).*/\1/')
+test -n "$DISPLAY" || DISPLAY=":0"
+export DISPLAY
+
+# Find a GUI in case we need an SSH password
+ssh_askpass() {
+  local dirs="/usr/bin /usr/local/bin /usr/libexec/openssh /usr/lib/openssh"
+  local progs="ssh-askpass gtk-led-askpass gnome-ssh-askpass x11-ssh-askpass"
+  local askpass=
+
+  for prog in ${progs}
+  do
+    askpass=$(which ${prog})
+    test -x "${askpass}" && echo ${askpass} && return 0
+  done
+
+  for prog in ${progs}
+  do
+    for dir in $dirs
+    do
+      askpass="${dir}/${prog}"
+      test -x "${askpass}" && echo ${askpass} && return 0
+    done
+  done
+
+  fail "cannot find SSH_ASKPASS"
+}
+
+SSH_ASKPASS=$(ssh_askpass)
+export SSH_ASKPASS
+
+# Load the keychain environment
+eval $(keychain -q --ignore-missing --eval)
+
+# Run the SSH command
+ssh "$@"

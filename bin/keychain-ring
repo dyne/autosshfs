@@ -1,0 +1,80 @@
+#!/bin/bash
+
+# keychain-ring -- Query keychain status and autoload keys
+#
+## LICENSE
+#
+# Copyright 2011 Hellekin O. Wolf <hellekin@riseup.net>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>,
+# or, from the package source directory, run: make license
+#
+
+PROGNAME=${0##*/}
+
+usage() {
+cat <<EOD
+${PROGNAME} -h
+${PROGNAME} [-q] [-s|+s] [-g|+g]
+
+Query keychain status and autoload keys
+
+  -h, --help        Display this notice
+  -q, --quiet       Do not output anything
+  -s, --skip-ssh    Ignore SSH keys
+  +s, --load-ssh    Load SSH Keys   (default)
+  -g, --skip-gpg    Ignore GPG Keys (default)
+  +g, --load-gpg    Load GPG Keys
+
+EOD
+}
+
+gpg_keys() {
+  if [ -z $nogpg ]; then
+    gpg --list-secret-keys --with-key-data | \
+    sed -e '/^sec/!d;s/^.*[0-9]*:[A-F0-9]*\([A-F0-9]\{8\}\)\:.*$/\1/' | \
+      tr "\n" " "
+  fi
+}
+
+ssh_keys()
+{
+  if [ -z $nossh ]; then
+    find $HOME/.ssh -type f -perm 0600 -name id_rsa\* -print 2>/dev/null
+  fi
+}
+
+quiet=
+nogpg=1
+nossh=
+
+while test -n "$1"
+do
+  case "$1" in
+    -h|--help) usage; exit 0;;
+    -q|--quiet) quiet='-q';;
+    -g|--skip-gpg) nogpg=1;;
+    +g|--load-gpg) nogpg=;;
+    -s|--skip-ssh) nossh=1;;
+    +s|--load-ssh) nossh=;;
+     *) ;;
+  esac
+  shift
+done
+
+test -z $HOSTNAME                         && HOSTNAME=$(uname -n)
+test -s $HOME/.keychain/$HOSTNAME-sh      && . $HOME/.keychain/$HOSTNAME-sh
+test -s $HOME/.keychain/$HOSTNAME-sh-gpg  && . $HOME/.keychain/$HOSTNAME-sh-gpg
+
+$(which keychain) $quiet $(ssh_keys) $(gpg_keys)

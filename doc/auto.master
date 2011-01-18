@@ -1,0 +1,25 @@
+#
+# Sample auto.master file showing SSHFS support
+#
++auto.master
+
+#
+# AutoFS Map for user mounts using SSHFS and keychain
+#
+# 1. Each entry MUST point to under user's $HOME.  We assume it takes the form
+#
+#   /home/$USER/mnt/ssh
+#
+# In any other case it will break.
+#
+# 2. UID and GID must match `id -u $USER` and `id -g $USER`
+#
+# 3. $USER must be in group 'ssh'
+#
+# Example:
+#
+#  /home/joe/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=1234,gid=1234,--timeout=600,--ghost
+#
+# To setup the user environment properly, Run: autosshfs-user add joe 
+#
+/home/hellekin/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=9999,gid=9999,--timeout=600,--ghost
