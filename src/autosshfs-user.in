@@ -23,9 +23,8 @@
 
 PROGNAME=${0##*/}
 
-# TODO: should go to Makefile
-PREFIX=/usr/local
-GROUP=autosshfs
+PREFIX="%PREFIX%"
+GROUP="%GROUP%"
 
 fail() {
   echo "${PROGNAME}: $@"

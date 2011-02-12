@@ -14,7 +14,7 @@
 #
 # 2. UID and GID must match `id -u $USER` and `id -g $USER`
 #
-# 3. $USER must be in group 'ssh'
+# 3. $USER must be in group 'autosshfs'
 #
 # Example:
 #

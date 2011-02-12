@@ -2,12 +2,15 @@
 
 * Introduction
 
-  Autofs doesn't provide an easy way to mount SSHFS filesystems as a regular user.  HOWTOs abound on the topic, but rarely propose a solution involving the user's ssh-agent and password-protected keys.
+  Autofs doesn't provide an easy way to mount SSHFS filesystems as a
+  regular user.  HOWTOs abound on the topic, but rarely propose a
+  solution involving the user's ssh-agent and password-protected keys.
 
-  Autosshfs provides helper scripts to manage user automounts using SSHFS and keychain
+  Autosshfs provides helper scripts to manage user automounts using
+  SSHFS and keychain
 
-  This program was heavily inspired by Josh Jackson's autofs_sshfs, published at
-  http://pturing.firehead.org/software/autofs_sshfs/
+  This program was heavily inspired by Josh Jackson's autofs_sshfs,
+  published at http://pturing.firehead.org/software/autofs_sshfs/
 
 * License
 
@@ -40,12 +43,12 @@
 ** /etc/auto.master
 
     1. Each entry MUST point to under user's $HOME.  We assume it takes the form
-:      /home/$USER/path/to/sshfs/mountpoint
+:      /home/$USER/mnt/ssh/mountpoint
        In any other case it will break.
 
     2. UID and GID must match `id -u $USER` and `id -g $USER`
 
-    3. $USER must be in group 'ssh'
+    3. $USER must be in group 'autossh'
 
 *** Example:
 
@@ -57,14 +60,14 @@
 
     Running =autosshfs-user add joe= will:
 
-      - add =joe= to the =ssh= group
+      - add =joe= to the =autosshfs= group
       - create a =autosshfs-as-joe= sudo wrapper for SSH
       - register the user automounter in =/etc/auto.master=
       - =restart autofs=
 
     Running =autosshfs-user del joe= will:
 
-      - remove =joe= from the =ssh= group
+      - remove =joe= from the =autosshfs= group
       - remove the =autosshfs-as-joe= script
       - remove =joe='s entry in =/etc/auto.master=
       - =restart autofs=
@@ -81,6 +84,9 @@
 
 ** autosshfs-ssh
 
-    A wrapper to the =ssh= command that will force autofs to use the user's SSH setup, including password-protected SSH keys, as long as they're available to the keychain.
+    A wrapper to the =ssh= command that will force autofs to use the
+    user's SSH setup, including password-protected SSH keys, as long
+    as they're available to the keychain.
 
-    It is called by =autosshfs-as-joe= (using =sudo=) and loads =joe='s =keychain=.
+    It is called by =autosshfs-as-joe= (using =sudo=) and loads
+    =joe='s =keychain=.

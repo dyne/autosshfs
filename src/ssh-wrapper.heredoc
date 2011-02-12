@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# autosshfs-as-${username}
+#
+# Wrapper script to make automount use the user's ssh-agent(1)
+# when mounting SSHFS.  It is used as the ssh-command by autofs(8).
+#
+
+if [ \`id -un\` != "root" ]; then
+  logger -s -i -t autosshfs "user \${USER} is not authorized to run autosshfs-as-${username}"
+  exit 1
+fi
+
+# automount(8) sends -a -x -oClearAllForwardings=yes -2 HOST -s sftp
+exec sudo -H -u ${username} -i ${PREFIX}/sbin/autosshfs-ssh "\${5}"
+${generator}

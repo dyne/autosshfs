@@ -1,8 +1,10 @@
 # Load this from your .bashrc / .zshrc
 #
-# It will load all ssh keys in ~/.ssh/id_rsa* with perm 0600
-# as well as all GPG keys with a private key in the secret keyring
-#
+# keychain-ring wraps keychain to autoload keys.
+# Its usage is optional and the script is provided as information.
+# The default way is to use the keychain command:
+#  
+eval $(keychain -q --ignore-missing --eval)
 
 [ -x $(which keychain-ring) ]           && $(which keychain-ring) -q
 [ -z "$HOSTNAME" ]                      && HOSTNAME=`uname -n`
