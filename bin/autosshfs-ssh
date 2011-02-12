@@ -2,7 +2,7 @@
 
 # autosshfs-ssh -- Wrap ssh to load SSH environment from user's keychain
 #
-# It is intended to be called as: sudo -H -u USER -i autosshfs-ssh "$@"
+# It is intended to be called as: sudo -H -u USER -i autosshfs-ssh HOST
 #
 ## LICENSE
 #
@@ -39,7 +39,7 @@ test -x "${KEYCHAIN}" || fail "missing executable: keychain"
 
 # Find user's DISPLAY
 DISPLAY=$(ps aux | sed -e '/sed/d;/${USER}.*xinit/!d;s/^.*xserverrc \(:[0-9\.]*\).*/\1/')
-test -n "$DISPLAY" || DISPLAY=":0"
+test -n "$DISPLAY" || DISPLAY=":0.0"
 export DISPLAY
 
 # Find a GUI in case we need an SSH password
@@ -73,4 +73,5 @@ export SSH_ASKPASS
 eval $(keychain -q --ignore-missing --eval)
 
 # Run the SSH command
-ssh "$@"
+# autosshfs-as-USER passes the HOST to ssh to as $1
+exec ssh -a -x -2 -oClearAllForwardings=yes "${1}" -s sftp
