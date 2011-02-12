@@ -26,16 +26,20 @@ PROGNAME=${0##*/}
 usage() {
 cat <<EOD
 ${PROGNAME} -h
-${PROGNAME} [-q] [-s|+s] [-g|+g]
+${PROGNAME} [-q] [-n] [-s|+s] [-g|+g]
 
 Query keychain status and autoload keys
 
+As of v0.2.0, --no-load is the default, to accomodate users
+with a lot of keys.  See ChangeLog.
+
   -h, --help        Display this notice
+  -n, --no-load     Do not load any keys (default, implies -s -g)
   -q, --quiet       Do not output anything
-  -s, --skip-ssh    Ignore SSH keys
-  +s, --load-ssh    Load SSH Keys   (default)
+  -s, --skip-ssh    Ignore SSH keys (default)
+  +s, --load-ssh    Load SSH Keys   (overrides -n)
   -g, --skip-gpg    Ignore GPG Keys (default)
-  +g, --load-gpg    Load GPG Keys
+  +g, --load-gpg    Load GPG Keys (overrides -n)
 
 EOD
 }
@@ -57,12 +61,13 @@ ssh_keys()
 
 quiet=
 nogpg=1
-nossh=
+nossh=1
 
 while test -n "$1"
 do
   case "$1" in
     -h|--help) usage; exit 0;;
+    -n|--no-load) no-gpg=1; no-ssh=1;;
     -q|--quiet) quiet='-q';;
     -g|--skip-gpg) nogpg=1;;
     +g|--load-gpg) nogpg=;;
