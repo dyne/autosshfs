@@ -70,7 +70,7 @@ SSH_ASKPASS=$(ssh_askpass)
 export SSH_ASKPASS
 
 # Load the keychain environment
-eval $(keychain -q --ignore-missing --eval)
+eval $(keychain -q --eval)
 
 # Run the SSH command
 # autosshfs-as-USER passes the HOST to ssh to as $1
