@@ -7,10 +7,10 @@
   solution involving the user's ssh-agent and password-protected keys.
 
   Autosshfs provides helper scripts to manage user automounts using
-  SSHFS and keychain
+  =SSHFS= and =keychain=.
 
   This program was heavily inspired by Josh Jackson's autofs_sshfs,
-  published at http://pturing.firehead.org/software/autofs_sshfs/
+  published at [[http://pturing.firehead.org/software/autofs_sshfs/]]
 
 * License
 
@@ -21,20 +21,20 @@
     as published by the Free Software Foundation, either version 3 of
     the License, or (at your option) any later version.
 
-    See: COPYING (or run make license if you're online)
+    See: [[COPYING]] (or run make license if you're online)
 
 * Requirements
 
-    - sudo privilege (for installation)
-    - ssh, sshfs, autofs, keychain, ssh-askpass
+    - =sudo= privilege (for installation)
+    - =ssh=, =sshfs=, =autofs=, =keychain=, =ssh-askpass=
 
 * Quick Install
 
-    sudo apt-get install keychain ssh-askpass sshfs autofs
-    git clone https://github.com/hellekin/autosshfs.git
-    cd autosshfs && sudo make install
-    sudo autosshfs-user add $(id -un)
-    ls ~/mnt/ssh/yourremotehost
+:    sudo apt-get install keychain ssh-askpass sshfs autofs
+:    git clone https://github.com/hellekin/autosshfs.git
+:    cd autosshfs && sudo make install
+:    sudo autosshfs-user add $(id -un)
+:    ls ~/mnt/ssh/yourremotehost
 
 * Operation
 
@@ -46,9 +46,9 @@
 :      /home/$USER/mnt/ssh/mountpoint
        In any other case it will break.
 
-    2. UID and GID must match `id -u $USER` and `id -g $USER`
+    2. UID and GID must match =id -u $USER= and =id -g $USER=
 
-    3. $USER must be in group 'autossh'
+    3. $USER must be in group *autossh*
 
 *** Example:
 
@@ -76,7 +76,7 @@
 
     Returns the =autofs= map for the requested host.
 
-    Mountpoints are under /home/$USER/mnt/ssh
+    Mountpoints are under =/home/$USER/mnt/ssh=
 
     The whole remote host's filesystem is mounted, only accessible to the user.
 
@@ -84,9 +84,9 @@
 
 ** autosshfs-ssh
 
-    A wrapper to the =ssh= command that will force autofs to use the
-    user's SSH setup, including password-protected SSH keys, as long
-    as they're available to the keychain.
+    A wrapper to the =ssh= command that will force =automount= to use
+    the user's SSH setup, including password-protected SSH keys, as
+    long as they're available to the =keychain=.
 
     It is called by =autosshfs-as-joe= (using =sudo=) and loads
     =joe='s =keychain=.
