@@ -1,6 +1,6 @@
 ## LICENSE
 #
-# Copyright 2011 Hellekin O. Wolf <hellekin@riseup.net>
+# Copyright 2011,2012 hellekin <hellekin@riseup.net>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
