@@ -4,7 +4,7 @@
 #
 ## LICENSE
 #
-# Copyright 2011 Hellekin O. Wolf <hellekin@riseup.net>
+# Copyright 2011,2012 hellekin <hellekin@riseup.net>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -55,7 +55,8 @@ test $? -eq 0 || fail "user has no primary group?"
 
 # Do some magic to sanitize environment
 mountroot="/home/${username}/mnt/ssh"
-test -d "${mountroot}" || mkdir -p -m 0755 -u ${uid} -g ${gid} "${mountroot}" || true
+test -d "${mountroot}" || mkdir -p -m 0755 "${mountroot}" || true
+su - $username -c "test -O ${mountroot} -a -G ${mountroot}" || chown ${uid}:${gid} "${mountroot}"
 chmod 0700 "${mountroot}"
 
 master_line="${mountroot} program:${PREFIX}/sbin/autosshfs-map uid=${uid},gid=${gid},--timeout=600,--ghost"
