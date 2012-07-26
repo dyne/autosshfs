@@ -34,8 +34,38 @@
 :    git clone https://github.com/hellekin/autosshfs.git
 :    cd autosshfs && sudo make install
 :    sudo autosshfs-user add $(id -un)
-:    ls ~/mnt/ssh/yourremotehost
 
+     If you don't already have an SSH key, create one now
+
+:    if [ ! -r $HOME/.ssh/id_rsa ]; then ssh-keygen; fi
+
+:    ssh-copy-id [user@]yourremotehost[:port]
+
+    You MUST copy the public part of the SSH key to the user@yourremotehost's .ssh/authorized_keys
+    file in order to allow password-less connections. ssh-copy-id will do that for you.
+    Connections will silently fail if your public key isn't known to the remote host
+    (internally, the automount daemon will be waiting at a "Password: " prompt).
+
+* Usage
+
+:    ls ~/mnt/ssh/[user@]yourremotehost[:port]
+
+    This will cause the autofs automount to attempt an SSH connection to 
+      [user@]yourremotehost[:port]
+
+    The values denoted by square brackets are optional.
+
+    By default the connection to 'yourremotehost' will use the same
+    user-name as you have on the localhost. It is possible to specify a
+    different user-name and a non-standard port for connections to 'yourremotehost'.
+    
+    The following are all valid:
+
+    ls ~/mnt/ssh/yourremotehost
+    ls ~/mnt/ssh/yourremotehost:1234
+    ls ~/mnt/ssh/user@yourremotehost
+    ls ~/mnt/ssh/user@yourremotehost:1234
+    
 * Operation
 
     This section describes how the whole thing works.
