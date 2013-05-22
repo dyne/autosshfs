@@ -4,7 +4,7 @@
 #
 ## LICENSE
 #
-# Copyright 2011,2012 hellekin <hellekin@riseup.net>
+# Copyright 2011,2012,2013 hellekin <hellekin@cepheide.org>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -59,7 +59,7 @@ test -d "${mountroot}" || mkdir -p -m 0755 "${mountroot}" || true
 su - $username -c "test -O ${mountroot} -a -G ${mountroot}" || chown ${uid}:${gid} "${mountroot}"
 chmod 0700 "${mountroot}"
 
-master_line="${mountroot} program:${PREFIX}/sbin/autosshfs-map uid=${uid},gid=${gid},--timeout=600,--ghost"
+master_line="${mountroot} program:${PREFIX}/sbin/autosshfs-map uid=${uid},gid=${gid},workaround=rename,--timeout=600,--ghost"
 
 SSH_WRAPPER="${PREFIX}/bin/autosshfs-as-${username}"
 

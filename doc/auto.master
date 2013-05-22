@@ -18,7 +18,7 @@
 #
 # Example:
 #
-#  /home/joe/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=1234,gid=1234,--timeout=600,--ghost
+#  /home/joe/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=1234,gid=1234,workaround=rename,--timeout=600,--ghost
 #
 # To setup the user environment properly, Run: autosshfs-user add joe 
 #
