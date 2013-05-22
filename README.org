@@ -87,6 +87,12 @@
 
 :   /home/joe/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=1234,gid=1234,--timeout=600,--ghost
 
+    Since [[https://github.com/hellekin/autosshfs/commit/7f2007b4bde5e9dfbf4b7d035a048b7b2722d827][@7f2007b]], =workaround=rename= is enabled by default to
+    mimick POSIX behavior when renaming files (see [[https://github.com/hellekin/autosshfs/issues/4][Issue #4]]), e.g., to
+    avoid issues with moving files in SVN repositories.  If that
+    option is not what you want, please reopen the issue so we devise
+    a better solution.
+
 ** autosshfs-user
 
     This program enables or disables the automount service for a user.
