@@ -55,7 +55,8 @@ gpg_keys() {
 ssh_keys()
 {
   if [ -z $nossh ]; then
-    find $HOME/.ssh -type f -perm 0600 -name id_rsa\* -print 2>/dev/null
+    find $HOME/.ssh -type f -perm 0600 -regex ".*/id_\(d\|ecd\|r\)sa.*" \
+      ! -regex ".*\.keystore$" -print 2>/dev/null
   fi
 }
 
