@@ -12,7 +12,7 @@ all:
 	@echo
 	@echo sudo make [un]install  -- Install or uninstall autosshfs
 	@echo
- 
+
 install:
 	@cd src && make
 	@groupadd --system ${GROUP} 2>/dev/null
@@ -24,7 +24,9 @@ install:
 	@install -o root -g root     -m 0644 doc/* ${PREFIX}/share/doc/autosshfs
 
 uninstall:
-	@rm -rf ${PREFIX}/bin/autosshfs-* ${PREFIX}/bin/keychain-ring ${PREFIX}/share/doc/autosshfs
+	@rm -f ${PREFIX}/bin/autosshfs-* ${PREFIX}/bin/keychain-ring
+	@rm -f ${PREFIX}/share/doc/autosshfs/*
+	@rmdir ${PREFIX}/share/doc/autosshfs
 	@groupdel ${GROUP} 2>/dev/null
 	@cd src && make clean
 
