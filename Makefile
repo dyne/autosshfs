@@ -16,15 +16,15 @@ all:
 install:
 	@cd src && make
 	@addgroup --system ${GROUP} 2>/dev/null
-	@install -o root -g root     -m 0750 src/autosshfs-user ${PREFIX}/sbin/
-	@install -o root -g ${GROUP} -m 0750 src/autosshfs-map  ${PREFIX}/sbin/
-	@install -o root -g ${GROUP} -m 0750 src/autosshfs-ssh  ${PREFIX}/sbin/
+	@install -o root -g root     -m 0750 src/autosshfs-user ${PREFIX}/bin/
+	@install -o root -g ${GROUP} -m 0750 src/autosshfs-map  ${PREFIX}/bin/
+	@install -o root -g ${GROUP} -m 0750 src/autosshfs-ssh  ${PREFIX}/bin/
 	@install -o root -g root     -m 0755 bin/keychain-ring  ${PREFIX}/bin/
 	@install -o root -g root     -m 0755 -d ${PREFIX}/share/doc/autosshfs/
 	@install -o root -g root     -m 0644 doc/* ${PREFIX}/share/doc/autosshfs
 
 uninstall:
-	@rm -rf ${PREFIX}/sbin/autosshfs-* ${PREFIX}/bin/autosshfs-as-* ${PREFIX}/bin/keychain-ring ${PREFIX}/share/doc/autosshfs
+	@rm -rf ${PREFIX}/bin/autosshfs-* ${PREFIX}/bin/keychain-ring ${PREFIX}/share/doc/autosshfs
 	@delgroup ${GROUP} 2>/dev/null
 	@cd src && make clean
 

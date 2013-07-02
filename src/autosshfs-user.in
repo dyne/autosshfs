@@ -59,7 +59,7 @@ test -d "${mountroot}" || mkdir -p -m 0755 "${mountroot}" || true
 su - $username -c "test -O ${mountroot} -a -G ${mountroot}" || chown ${uid}:${gid} "${mountroot}"
 chmod 0700 "${mountroot}"
 
-master_line="${mountroot} program:${PREFIX}/sbin/autosshfs-map uid=${uid},gid=${gid},workaround=rename,--timeout=600,--ghost"
+master_line="${mountroot} program:${PREFIX}/bin/autosshfs-map uid=${uid},gid=${gid},workaround=rename,--timeout=600,--ghost"
 
 SSH_WRAPPER="${PREFIX}/bin/autosshfs-as-${username}"
 
@@ -81,7 +81,7 @@ if [ \`id -un\` != "root" ]; then
 fi
 
 # automount(8) sends -a -x -oClearAllForwardings=yes -2 HOST -s sftp
-exec sudo -H -u ${username} -i ${PREFIX}/sbin/autosshfs-ssh "\${5}"
+exec sudo -H -u ${username} -i ${PREFIX}/bin/autosshfs-ssh "\${5}"
 ${generator}
 EOD
 }
