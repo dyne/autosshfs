@@ -7,7 +7,7 @@ mkscript = sed \
 	-e "s|%PREFIX%|$(PREFIX)|" \
 	-e "s|%GROUP%|$(GROUP)|" \
 	$1.in
- 
+
 autosshfs-%: autosshfs-%.in
 	$(call mkscript,$@) > $@
 
