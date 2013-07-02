@@ -88,7 +88,7 @@ EOD
 
 case "$1" in
   add)
-    adduser $username $GROUP
+    gpasswd -a $username $GROUP
     create_ssh_wrapper
     if grep "^$mountroot" /etc/auto.master 2>/dev/null
     then
@@ -99,7 +99,7 @@ case "$1" in
     ;;
   del)
     rm -f $SSH_WRAPPER
-    deluser $username $GROUP
+    gpasswd -d $username $GROUP
     sed -e "s#${mountroot}.*##" -i /etc/auto.master
     ;;
   *)

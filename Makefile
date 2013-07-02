@@ -15,7 +15,7 @@ all:
  
 install:
 	@cd src && make
-	@addgroup --system ${GROUP} 2>/dev/null
+	@groupadd --system ${GROUP} 2>/dev/null
 	@install -o root -g root     -m 0750 src/autosshfs-user ${PREFIX}/bin/
 	@install -o root -g ${GROUP} -m 0750 src/autosshfs-map  ${PREFIX}/bin/
 	@install -o root -g ${GROUP} -m 0750 src/autosshfs-ssh  ${PREFIX}/bin/
@@ -25,7 +25,7 @@ install:
 
 uninstall:
 	@rm -rf ${PREFIX}/bin/autosshfs-* ${PREFIX}/bin/keychain-ring ${PREFIX}/share/doc/autosshfs
-	@delgroup ${GROUP} 2>/dev/null
+	@groupdel ${GROUP} 2>/dev/null
 	@cd src && make clean
 
 license:
