@@ -86,21 +86,32 @@ ${generator}
 EOD
 }
 
+MASTER_MAP_NAME=
+autofs_conf=$(automount -V | awk '/config dir/ {print $3"/autofs"}')
+if [ -f "$autofs_conf" ]; then
+    source "$autofs_conf"
+fi
+if [ -z "$MASTER_MAP_NAME" ]; then
+    test -d /etc/autofs \
+        && MASTER_MAP_NAME=/etc/autofs/auto.master \
+        || MASTER_MAP_NAME=/etc/auto.master
+fi
+
 case "$1" in
   add)
     gpasswd -a $username $GROUP
     create_ssh_wrapper
-    if grep "^$mountroot" /etc/auto.master 2>/dev/null
+    if grep "^$mountroot" $MASTER_MAP_NAME 2>/dev/null
     then
-      sed -e "s#${mountroot}.*#$master_line#" -i /etc/auto.master
+      sed -e "s#${mountroot}.*#$master_line#" -i $MASTER_MAP_NAME
     else
-      echo "$master_line" >> /etc/auto.master
+      echo "$master_line" >> $MASTER_MAP_NAME
     fi
     ;;
   del)
     rm -f $SSH_WRAPPER
     gpasswd -d $username $GROUP
-    sed -e "s#${mountroot}.*##" -i /etc/auto.master
+    sed -e "s#${mountroot}.*##" -i $MASTER_MAP_NAME
     ;;
   *)
     usage
