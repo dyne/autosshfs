@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+## Determine how to restart autofs
+
+## initctl
+RESTART=`which restart`
+if [ -x "$RESTART" ]; then
+    echo "$RESTART autofs"
+    exit 0
+fi
+
+## sysvinit on Debian
+RESTART="/etc/init.d/autofs"
+if [ -x "$RESTART" ]; then
+    echo "$RESTART restart"
+    exit 0
+fi
+
+## sysvinit on Fedora
+RESTART="/etc/rc.d/autofs"
+if [ -x "$RESTART" ]; then
+    echo "$RESTART restart"
+    exit 0
+fi
+
+## systemd
+# After sysvinit because it can co-exist with sysvinit for transition
+RESTART=`which systemctl`
+if [ -x "$RESTART" ]; then
+    echo "$RESTART restart autofs"
+    exit 0
+fi
+
+echo "Unsupported method to restart autofs. Please report a bug." >&2
+exit 1
