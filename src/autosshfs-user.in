@@ -59,7 +59,7 @@ test -d "${mountroot}" || mkdir -p -m 0755 "${mountroot}" || true
 su - $username -c "test -O ${mountroot} -a -G ${mountroot}" || chown ${uid}:${gid} "${mountroot}"
 chmod 0700 "${mountroot}"
 
-master_line="${mountroot} program:${PREFIX}/sbin/autosshfs-map uid=${uid},gid=${gid},workaround=rename,--timeout=600,--ghost"
+master_line="${mountroot} program:${PREFIX}/bin/autosshfs-map uid=${uid},gid=${gid},workaround=rename,--timeout=600,--ghost"
 
 SSH_WRAPPER="${PREFIX}/bin/autosshfs-as-${username}"
 
@@ -81,26 +81,37 @@ if [ \`id -un\` != "root" ]; then
 fi
 
 # automount(8) sends -a -x -oClearAllForwardings=yes -2 HOST -s sftp
-exec sudo -H -u ${username} -i ${PREFIX}/sbin/autosshfs-ssh "\${5}"
+exec sudo -H -u ${username} -i ${PREFIX}/bin/autosshfs-ssh "\${5}"
 ${generator}
 EOD
 }
 
+MASTER_MAP_NAME=
+autofs_conf=$(automount -V | awk '/config dir/ {print $3"/autofs"}')
+if [ -f "$autofs_conf" ]; then
+    source "$autofs_conf"
+fi
+if [ -z "$MASTER_MAP_NAME" ]; then
+    test -d /etc/autofs \
+        && MASTER_MAP_NAME=/etc/autofs/auto.master \
+        || MASTER_MAP_NAME=/etc/auto.master
+fi
+
 case "$1" in
   add)
-    adduser $username $GROUP
+    gpasswd -a $username $GROUP
     create_ssh_wrapper
-    if grep "^$mountroot" /etc/auto.master 2>/dev/null
+    if grep "^$mountroot" $MASTER_MAP_NAME 2>/dev/null
     then
-      sed -e "s#${mountroot}.*#$master_line#" -i /etc/auto.master
+      sed -e "s#${mountroot}.*#$master_line#" -i $MASTER_MAP_NAME
     else
-      echo "$master_line" >> /etc/auto.master
+      echo "$master_line" >> $MASTER_MAP_NAME
     fi
     ;;
   del)
     rm -f $SSH_WRAPPER
-    deluser $username $GROUP
-    sed -e "s#${mountroot}.*##" -i /etc/auto.master
+    gpasswd -d $username $GROUP
+    sed -e "s#${mountroot}.*##" -i $MASTER_MAP_NAME
     ;;
   *)
     usage
@@ -108,4 +119,4 @@ case "$1" in
     ;;
 esac
 
-restart autofs 2>/dev/null || /etc/init.d/autofs restart
+%RESTART%

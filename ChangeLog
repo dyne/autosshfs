@@ -1,0 +1,61 @@
+2013-07-02  hellekin <hellekin@cepheide.org>
+
+  * ChangeLog, VERSION: Version 0.3.0 -- Flying Edward (to safety)  This
+  release adds support for ArchLinux, thanks to the precious help of
+  @korakinos, and @jonbrett. (See pull #8) It does not bring new functionality
+  other than being ready-to-use on non-Debian systems.  *  It occurs at an
+  interesting moment in history, where a whistleblower name Edward Snowden is
+  chased by the U.S.A. for leaking secrets about a global surveillance system
+  operated by the NSA: PRISM. Today, in order to prevent Snowden from seeking
+  asylum, the U.S.A. and its allies from Europe (Portugal, France, Italy, and
+  Austria) are abusing the rules of diplomacy. They're threatening the life of
+  President Evo Morales of Bolivia, by refusing their aerial space to his
+  presidential plane on its way back from Russia, where Snowden found a
+  temporary refuge, on the suspicion that the whistleblower might be on board. 
+  That is unprecedented, and as in the reclusion of Julian Assange,
+  demonstrates once again the unilaterality of the "democratic rule", where a
+  pseudo-democratic-superpower-gone-out-of-control respects or violates
+  diplomacy, human rights, or the Constitution as it sees fit.  The best weapon
+  of a dictatorship is secrecy, but the best weapon of a democracy should be
+  the weapon of openness. -- Niels Bohr
+
+  * bin/which_restart, src/Makefile, src/autosshfs-user.in: Support various
+  methods of restarting autofs
+
+  * Makefile, src/autosshfs-user.in: Use shadow-utils rather than
+  Debian-specific tools
+
+  * Makefile, src/autosshfs-map.in, src/autosshfs-user.in,
+  src/ssh-wrapper.heredoc: Move to bin/
+
+2013-05-21  hellekin <hellekin@cepheide.org>
+
+  * doc/auto.master, src/autosshfs-map.in, src/autosshfs-user.in: Add
+  'workaround=rename' mount option (Fixes #4 thank you @jonbrett)
+
+2012-05-14  hellekin <hellekin@cepheide.org>
+
+  * README.org, bin/keychain-ring, doc/copyright_notice.txt,
+  src/autosshfs-map.in, src/autosshfs-ssh.in: Update copyright info
+
+2011-02-12  Hellekin O. Wolf =8) <hellekin@cepheide.org>
+
+  * Makefile, README.org, VERSION, bin/autosshfs-map, bin/autosshfs-ssh,
+  bin/autosshfs-user, doc/auto.master, doc/sample-shell-rc, src/Makefile,
+  src/autosshfs-map.in, src/autosshfs-ssh.in, src/autosshfs-user.in,
+  src/ssh-wrapper.heredoc: New version: more secure and to the point.
+
+  * Makefile, bin/autosshfs-map, bin/autosshfs-ssh, bin/autosshfs-user: Add
+  dedicated group and narrow the scope of commands  Now we're using a dedicated
+  group called 'autosshfs'.  I reduced the scope of autosshfs commands to
+  prevent malicious uses (e.g. trying to ssh to a host as the user):  [1]
+  autosshfs-as-user only passes the host instead of the whole ssh line provided
+  by automount [2] autosshfs-ssh hardcodes the ssh command to prevent passing
+  extra options to ssh [3] only root can run the commands [4] unauthorized use
+  is logged  [2] and [4] are not yet foolproof.
+
+2011-01-18  Hellekin O. Wolf =8) <hellekin@cepheide.org>
+
+  * COPYING, Makefile, README.org, VERSION, bin/autosshfs-map,
+  bin/autosshfs-ssh, bin/autosshfs-user, bin/keychain-ring, doc/auto.master,
+  doc/copyright_notice.txt, doc/sample-shell-rc: Initial Commit
