@@ -1,6 +1,9 @@
 #+TITLE: autosshfs -- Per user SSHFS automount using user's SSH config and keys.
 
 * Introduction
+  
+  Note: It seems the source of this is no longer on github.
+  See http://gitlab.com/hellekin/autosshfs
 
   Autofs doesn't provide an easy way to mount SSHFS filesystems as a
   regular user.  HOWTOs abound on the topic, but rarely propose a
@@ -31,7 +34,7 @@
 * Quick Install
 
 :    sudo apt-get install keychain ssh-askpass sshfs autofs
-:    git clone https://github.com/hellekin/autosshfs.git
+:    git clone https://gitlab.com/hellekin/autosshfs.git
 :    cd autosshfs && sudo make install
 :    sudo autosshfs-user add $(id -un)
 
