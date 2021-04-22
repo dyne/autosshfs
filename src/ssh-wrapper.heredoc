@@ -12,5 +12,5 @@ if [ \`id -un\` != "root" ]; then
 fi
 
 # automount(8) sends -a -x -oClearAllForwardings=yes -2 HOST -s sftp
-exec sudo -H -u ${username} -i ${PREFIX}/sbin/autosshfs-ssh "\${5}"
+exec sudo -H -u ${username} -i ${PREFIX}/bin/autosshfs-ssh "\${5}"
 ${generator}

@@ -1,6 +1,9 @@
 #+TITLE: autosshfs -- Per user SSHFS automount using user's SSH config and keys.
 
 * Introduction
+  
+  Note: It seems the source of this is no longer on github.
+  See http://gitlab.com/hellekin/autosshfs
 
   Autofs doesn't provide an easy way to mount SSHFS filesystems as a
   regular user.  HOWTOs abound on the topic, but rarely propose a
@@ -14,7 +17,7 @@
 
 * License
 
-    Copyright 2011,2012,2013 hellekin <hellekin@riseup.net>
+    Copyright 2011,2012,2013 hellekin <hellekin@cepheide.org>
 
     This program is free software: you can redistribute it and/or
     modify it under the terms of the GNU Affero General Public License
@@ -26,18 +29,18 @@
 * Requirements
 
     - =sudo= privilege (for installation)
-    - =ssh=, =sshfs=, =autofs=, =keychain=, =ssh-askpass=
+    - =ssh=, =sshfs=, =autofs=, =keychain=, =ssh-askpass=, =shadow-utils=
 
 * Quick Install
 
 :    sudo apt-get install keychain ssh-askpass sshfs autofs
-:    git clone https://github.com/hellekin/autosshfs.git
+:    git clone https://gitlab.com/hellekin/autosshfs.git
 :    cd autosshfs && sudo make install
 :    sudo autosshfs-user add $(id -un)
 
      If you don't already have an SSH key, create one now
 
-:    if [ ! -r $HOME/.ssh/id_rsa ]; then ssh-keygen; fi
+:    if [ ! -r $HOME/.ssh/id_ecdsa ]; then ssh-keygen -b 521 -t ecdsa; fi
 
 :    ssh-copy-id [user@]yourremotehost[:port]
 
@@ -52,8 +55,8 @@
 
 :    ls ~/mnt/ssh/[user@]yourremotehost[:port]
 
-    This will cause the autofs automount to attempt an SSH connection to 
-      [user@]yourremotehost[:port]
+    This will cause the autofs automount to attempt an SSH connection
+      to [user@]yourremotehost[:port]
 
     The values denoted by square brackets are optional.
 
@@ -61,19 +64,19 @@
     user-name as you have on the localhost.  It is possible to specify
     a different user-name and a non-standard port for connections to
     'yourremotehost'.
-    
+
     The following are all valid:
 
 :    ls ~/mnt/ssh/yourremotehost
 :    ls ~/mnt/ssh/yourremotehost:1234
 :    ls ~/mnt/ssh/user@yourremotehost
 :    ls ~/mnt/ssh/user@yourremotehost:1234
-    
+
 * Operation
 
     This section describes how the whole thing works.
 
-** /etc/auto.master
+** /etc/auto.master (or /etc/autofs/auto.master)
 
     1. Each entry MUST point to under user's $HOME.  We assume it takes the form
 :      /home/$USER/mnt/ssh/mountpoint
@@ -85,7 +88,7 @@
 
 *** Example:
 
-:   /home/joe/mnt/ssh program:/usr/local/sbin/autosshfs-map uid=1234,gid=1234,--timeout=600,--ghost
+:   /home/joe/mnt/ssh program:/usr/local/bin/autosshfs-map uid=1234,gid=1234,--timeout=600,--ghost
 
     Since [[https://github.com/hellekin/autosshfs/commit/7f2007b4bde5e9dfbf4b7d035a048b7b2722d827][@7f2007b]], =workaround=rename= is enabled by default to
     mimick POSIX behavior when renaming files (see [[https://github.com/hellekin/autosshfs/issues/4][Issue #4]]), e.g., to
@@ -101,14 +104,14 @@
 
       - add =joe= to the =autosshfs= group
       - create a =autosshfs-as-joe= sudo wrapper for SSH
-      - register the user automounter in =/etc/auto.master=
+      - register the user automounter in =auto.master=
       - =restart autofs=
 
     Running =autosshfs-user del joe= will:
 
       - remove =joe= from the =autosshfs= group
       - remove the =autosshfs-as-joe= script
-      - remove =joe='s entry in =/etc/auto.master=
+      - remove =joe='s entry in =auto.master=
       - =restart autofs=
 
 ** autosshfs-map
@@ -119,7 +122,7 @@
 
     The whole remote host's filesystem is mounted, only accessible to the user.
 
-    The script is called from =/etc/auto.master=.
+    The script is called from =auto.master=.
 
 ** autosshfs-ssh
 
